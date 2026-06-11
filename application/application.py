@@ -1,115 +1,65 @@
-# Sets up the routes for all the pages
-
 import os
-from flask import Flask, render_template, request
-from flask_caching import Cache
+from flask import Flask, render_template, request, redirect, url_for
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from config import TEMPLATES_PATH, TEXT_PATH
-from application.helpers import *
-
-# 讀取 .env，本機測試用；Render 會讀 Environment Variables
 load_dotenv()
 
-app = Flask(__name__, template_folder=TEMPLATES_PATH)
+app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
-
-app.jinja_env.filters["is_active"] = is_active
-app.jinja_env.filters["get_language_image"] = get_language_image
-
-app.config["CACHE_TYPE"] = "simple"
-app.config["CACHE_DEFAULT_TIMEOUT"] = 3600
-cache = Cache(app)
-
 
 TEXT_MODEL = os.getenv("TEXT_MODEL", "gpt-4o-mini")
 IMAGE_MODEL = os.getenv("IMAGE_MODEL", "gpt-image-1")
 
-
 SYSTEM_PROMPT = """
 你是蔡承恩的個人化 AI 學習助理。
-你的任務是協助使用者完成 Flask 網站開發、OpenAI API 整合、程式除錯、網頁設計與作業報告整理。
-回答請使用繁體中文，語氣清楚、簡潔，適合學生學習與課堂成果展示。
-如果使用者詢問程式問題，請用步驟化方式說明，並提供可直接使用的程式碼。
+使用者是研究等角螺旋奈米天線的研究生，領域包含計算電磁學、矽光子技術、COMSOL Multiphysics、MATLAB、Python 與 LineBot 開發。
+你的任務是協助使用者整理程式、Flask 網站、OpenAI API、COMSOL 模擬、MATLAB 資料處理、作業報告與研究內容。
+回答請使用繁體中文，語氣清楚、簡潔、專業，適合課堂作業與成果展示。
 """
 
 
 def get_openai_client():
-    """
-    建立 OpenAI Client。
-    如果沒有設定 OPENAI_API_KEY，會在使用 AI 功能時顯示錯誤，
-    不會讓整個網站首頁直接壞掉。
-    """
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:
-        raise ValueError("尚未設定 OPENAI_API_KEY，請到 Render Environment Variables 新增。")
+        raise ValueError("尚未設定 OPENAI_API_KEY，請先到 Render Environment Variables 新增。")
 
     return OpenAI(api_key=api_key)
 
 
 @app.route("/")
-def loading():
-    """Renders the Home page of the website."""
+def home():
     return render_template("home.html")
 
 
 @app.route("/home")
-@cache.cached()
-def home():
-    """Renders the Home page of the website."""
-    return render_template("home.html")
+def home_alias():
+    return redirect(url_for("home"))
 
 
 @app.route("/about")
-@cache.cached()
 def about():
-    """Renders the About Me page of the website."""
-    content = read_description(f"{TEXT_PATH}/about.txt")
-    return render_template("about.html", content=content)
+    return redirect(url_for("home") + "#about")
 
 
 @app.route("/skills")
-@cache.cached()
 def skills():
-    """Renders the Skills page of the website."""
-    skills = get_skills(f"{TEXT_PATH}/skills.json")
-    return render_template("skills.html", skills=skills)
+    return redirect(url_for("home") + "#skills")
 
 
 @app.route("/portfolio")
-@cache.cached()
 def portfolio():
-    """Renders the Portfolio page of the website."""
-    repos = get_repositories()
-    return render_template("portfolio.html", repos=repos)
+    return redirect(url_for("home") + "#portfolio")
 
 
-@app.route("/contact", methods=["GET", "POST"])
+@app.route("/contact")
 def contact():
-    """Renders the Contact page of the website."""
-
-    if request.method == "POST":
-        return render_template("result.html")
-
-    return render_template("contact.html")
-
-
-@app.route("/result")
-@cache.cached()
-def result():
-    """Renders the Result page of the website."""
-    return render_template("result.html")
+    return redirect(url_for("home") + "#contact")
 
 
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
-    """
-    OpenAI 文字助理頁面。
-    整合 flask-openai-assistant-main 的文字回覆功能。
-    """
-
     user_message = ""
     ai_response = ""
 
@@ -143,11 +93,6 @@ def chat():
 
 @app.route("/image", methods=["GET", "POST"])
 def image():
-    """
-    OpenAI 圖片生成頁面。
-    整合 Image-Generator 的圖片生成功能。
-    """
-
     prompt = ""
     size = "1024x1024"
     image_url = ""
@@ -174,10 +119,8 @@ def image():
 
                 if hasattr(image_data, "url") and image_data.url:
                     image_url = image_data.url
-
                 elif hasattr(image_data, "b64_json") and image_data.b64_json:
                     image_url = f"data:image/png;base64,{image_data.b64_json}"
-
                 else:
                     error_message = "圖片已生成，但沒有取得可顯示的圖片資料。"
 
@@ -195,5 +138,4 @@ def image():
 
 @app.route("/health")
 def health():
-    """Render health check."""
     return "OK", 200
