@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}
+AI 圖片生成
+{% endblock %}
+
+{% block main %}
+
+<div class="container description mb-5 pb-5" style="padding-top: 140px;">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-9">
+
+            <div class="description-box">
+
+                <h2 class="main-text">
+                    AI <span class="name">圖片生成</span>
+                </h2>
+
+                <p class="secondary-text">
+                    這是整合 OpenAI 的圖片生成工具。輸入圖片描述後，系統會自動產生圖片。
+                </p>
+
+                <form method="POST" action="{{ url_for('image') }}">
+
+                    <div class="mb-3">
+                        <textarea class="form-control" name="prompt" rows="4"
+                            placeholder="例如：A futuristic AI laboratory with blue neon light"
+                            required>{{ prompt }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <select class="form-control" name="size">
+                            <option value="1024x1024" {% if size == "1024x1024" %}selected{% endif %}>
+                                1024 x 1024
+                            </option>
+
+                            <option value="1024x1536" {% if size == "1024x1536" %}selected{% endif %}>
+                                1024 x 1536
+                            </option>
+
+                            <option value="1536x1024" {% if size == "1536x1024" %}selected{% endif %}>
+                                1536 x 1024
+                            </option>
+                        </select>
+                    </div>
+
+                    <button class="btn" type="submit">
+                        生成圖片 <i class="bx bx-image-add px-2"></i>
+                    </button>
+
+                </form>
+
+                {% if error_message %}
+                <div class="alert alert-danger mt-4">
+                    {{ error_message }}
+                </div>
+                {% endif %}
+
+                {% if image_url %}
+                <div class="card-design mt-4 p-4 text-center">
+
+                    <h5>
+                        <i class="bx bx-image"></i>
+                        生成結果
+                    </h5>
+
+                    <img src="{{ image_url }}" class="img-fluid rounded mt-3" alt="AI generated image">
+
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
