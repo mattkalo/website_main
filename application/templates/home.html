@@ -1,53 +1,105 @@
-<!-- The 'Home' page -->
-
 {% extends "layout.html" %}
 
-{% block head %}
-    <!-- Inherit from 'layout.html' -->
-    {{ super() }}
-    <!-- Typed.js -->
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <!-- JS -->
-    <script src="../static/js/particles.js" defer></script>
-    <script src="../static/js/typingEffect.js"></script>
-{% endblock %}
-
 {% block title %}
-    Home
+蔡承恩 | 個人品牌與作品集
 {% endblock %}
 
-{% block main %}
-    <!-- Particles Background -->
-    <div id="particles-js" class="background position-fixed w-100 h-100 top-0 start-0"></div>
-    <!-- End of Particles Background -->
-    <!-- Main Content -->
-    <div class="container description mb-5 pb-5">
-        <!-- Row -->
-        <div class="row align-items-center justify-content-center">
-            <!-- 1st Column -->
-            <div class="col-md-6 order-0 order-md-0 order-1 order-sm-0 text-center text-md-start mb-3 mb-md-0 pb-3">
-                <div class="description-box">
-                    <h2 class="main-text">Hello! <br> I'm <span class="name">Jack Chen</span></h2>
-                    <p class="secondary-text">I am a <span id="typing-text"></span></p>
-                    <div class="d-flex justify-content-center justify-content-sm-start">
-                        <button class="btn d-flex align-items-center justify-content-center" type="button">
-                            <a href="{{ url_for('about') }}">READ MORE <i class="bx bx-right-arrow-circle px-2"></i></a>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- End of 1st Column -->
-            <!-- 2nd Column -->
-            <div class="col-md-6 order-1 order-md-1 order-0 order-sm-1 text-center text-md-end">
-                <div class="card-design description-image d-flex justify-content-center align-items-center overflow-hidden">
-                    <img class="img-fluid w-75 h-75 object-fit-contain" src="../static/images/main_picture.png">
-                </div>
-            </div>
-            <!-- End of 2nd Column -->
-        </div>
-        <!-- End of Row -->
+{% block content %}
+
+<div class="hero"></div>
+
+<div class="profile-header container">
+    <div class="avatar-wrap">
+        <img src="{{ url_for('static', filename='images/avatar.jpg') }}"
+             alt="個人頭像"
+             class="avatar"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="avatar-fallback">承</div>
     </div>
-    <!-- End of Main Content -->
+
+    <h1 class="name">蔡承恩</h1>
+    <p class="headline">研究生 / 計算電磁學與矽光子技術</p>
+
+    <div class="action-buttons" style="margin-top: 20px;">
+        <a href="{{ url_for('chat') }}" class="btn btn-primary">AI 文字助理</a>
+        <a href="{{ url_for('image') }}" class="btn btn-outline">AI 圖片生成</a>
+    </div>
+</div>
+
+<section id="about" class="container">
+    <h2 class="section-title">關於我</h2>
+    <p class="about-text">
+        你好！我是蔡承恩。我目前是一名研究等角螺旋奈米天線的研究生。
+        在龐大的數據與 COMSOL 模擬之外，我喜歡踏實安穩的生活步調。
+        我期許自己能持續在計算電磁學領域中鑽研，將這份專注與毅力應用在每一次的研究挑戰中。
+    </p>
+</section>
+
+<section id="skills">
+    <div class="container">
+        <h2 class="section-title">專業技能</h2>
+
+        <div class="skills-container">
+            <span class="skill-tag">COMSOL Multiphysics</span>
+            <span class="skill-tag">MATLAB</span>
+            <span class="skill-tag">Python / LineBot 開發</span>
+            <span class="skill-tag">OpenAI API 整合</span>
+            <span class="skill-tag">Flask 網站開發</span>
+            <span class="skill-tag">天線設計 / iPAS 初級工程師</span>
+            <span class="skill-tag">前端網頁設計</span>
+        </div>
+    </div>
+</section>
+
+<section id="portfolio" class="container">
+    <h2 class="section-title">近期作品集</h2>
+
+    <div class="portfolio-grid">
+
+        <div class="portfolio-card">
+            <div class="portfolio-content">
+                <h3 class="portfolio-title">等角螺旋奈米天線研究</h3>
+                <p class="portfolio-desc">
+                    碩士論文核心專案。使用 COMSOL 進行頻域模擬，
+                    並結合 MATLAB 自動化處理數據與繪圖，
+                    優化奈米天線的幾何參數與電磁特性。
+                </p>
+            </div>
+        </div>
+
+        <div class="portfolio-card">
+            <div class="portfolio-content">
+                <h3 class="portfolio-title">智慧 LineBot 助理</h3>
+                <p class="portfolio-desc">
+                    使用 Python 開發 Line 機器人，整合 OpenAI API 進行自然語言對話，
+                    並實作群組訊息計數器與自定義人設功能。
+                </p>
+            </div>
+        </div>
+
+        <div class="portfolio-card">
+            <div class="portfolio-content">
+                <h3 class="portfolio-title">AI 個人品牌網站</h3>
+                <p class="portfolio-desc">
+                    使用 Flask 整合個人網站、OpenAI 文字助理與 AI 圖片生成器，
+                    並以深色科技風格呈現個人化作品集。
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section id="contact">
+    <div class="container">
+        <h2 class="section-title">與我聯絡</h2>
+
+        <div class="action-buttons">
+            <a href="mailto:a36325960@gmail.com" class="btn btn-primary">✉️ 寄信給我</a>
+            <a href="https://github.com/mattkalo" target="_blank" class="btn btn-outline">GitHub</a>
+            <a href="https://linkedin.com/in/夜-流-3b24b0346" target="_blank" class="btn btn-outline">LinkedIn</a>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
