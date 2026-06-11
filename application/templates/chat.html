@@ -1,60 +1,42 @@
 {% extends "layout.html" %}
 
 {% block title %}
-AI 文字助理
+AI 文字助理 | 蔡承恩
 {% endblock %}
 
-{% block main %}
+{% block content %}
 
-<div class="container description mb-5 pb-5" style="padding-top: 140px;">
+<section class="page-section">
+    <div class="container form-box">
 
-    <div class="row justify-content-center">
+        <h2 class="section-title">AI 文字助理</h2>
 
-        <div class="col-md-9">
+        <div class="ai-card">
 
-            <div class="description-box">
+            <p class="portfolio-desc" style="margin-bottom: 20px;">
+                此功能整合 OpenAI API，可協助整理 Flask 網站、OpenAI API、COMSOL、MATLAB、LineBot 與作業報告內容。
+            </p>
 
-                <h2 class="main-text">
-                    AI <span class="name">文字助理</span>
-                </h2>
+            <form method="POST" action="{{ url_for('chat') }}">
+                <textarea
+                    name="message"
+                    rows="6"
+                    placeholder="請輸入問題，例如：幫我整理 Flask 整合 OpenAI 的作業說明"
+                    required>{{ user_message }}</textarea>
 
-                <p class="secondary-text">
-                    這是整合 OpenAI 的個人化文字助理，可協助程式學習、Flask 部署、OpenAI API 使用與作業報告整理。
-                </p>
+                <button type="submit" class="btn btn-primary">送出問題</button>
+            </form>
 
-                <form method="POST" action="{{ url_for('chat') }}">
-
-                    <div class="mb-3">
-                        <textarea class="form-control" name="message" rows="5"
-                            placeholder="請輸入你的問題，例如：幫我整理 Flask 部署流程"
-                            required>{{ user_message }}</textarea>
-                    </div>
-
-                    <button class="btn" type="submit">
-                        送出問題 <i class="bx bx-send px-2"></i>
-                    </button>
-
-                </form>
-
-                {% if ai_response %}
-                <div class="card-design mt-4 p-4">
-
-                    <h5>
-                        <i class="bx bx-bot"></i>
-                        AI 回覆
-                    </h5>
-
-                    <p style="white-space: pre-wrap;">{{ ai_response }}</p>
-
-                </div>
-                {% endif %}
-
+            {% if ai_response %}
+            <div class="result-box">
+                <h3>AI 回覆</h3>
+                {{ ai_response }}
             </div>
+            {% endif %}
 
         </div>
 
     </div>
-
-</div>
+</section>
 
 {% endblock %}
