@@ -1,160 +1,534 @@
-<!-- Layout for all the pages -->
-
 <!DOCTYPE html>
-
-<html lang="en">
+<html lang="zh-TW">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}蔡承恩 | 個人品牌與作品集{% endblock %}</title>
 
-    {% block head %}
+    <style>
+        :root {
+            --primary-color: #00d1ff;
+            --primary-dark: #0099cc;
+            --text-dark: #e0e6ed;
+            --text-light: #b0b7c3;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: rgba(0, 209, 255, 0.2);
+            --glow: 0 0 10px rgba(0, 209, 255, 0.5);
+            --transition: all 0.3s ease;
+        }
 
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, width=device-width">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
-        crossorigin="anonymous">
+        html {
+            scroll-behavior: smooth;
+        }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-        crossorigin="anonymous"></script>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-dark);
+            overflow-x: hidden;
+        }
 
-    <!-- Favicon -->
-    <link href="../static/images/favicon.ico" rel="icon">
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-    <!-- Boxicons -->
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
 
-    <!-- CSS Style -->
-    <link href="../static/css/styles.css" rel="stylesheet">
+        .nav-inner {
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    {% endblock %}
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
 
-    <!-- Title -->
-    <title>{% block title %}{% endblock %}</title>
+        .brand span {
+            color: var(--primary-color);
+        }
 
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            text-shadow: var(--glow);
+        }
+
+        .hero {
+            position: relative;
+            height: 40vh;
+            min-height: 300px;
+            background:
+                linear-gradient(135deg, rgba(0, 209, 255, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%),
+                url("{{ url_for('static', filename='images/banner.jpg') }}") center/cover no-repeat;
+            background-color: #000;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 209, 255, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%);
+        }
+
+        .profile-header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-top: -100px;
+            padding-bottom: 2rem;
+        }
+
+        .avatar-wrap {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            object-fit: cover;
+            background-color: #111;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            filter: drop-shadow(0 0 5px rgba(0, 209, 255, 0.3));
+        }
+
+        .avatar-fallback {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: #111827;
+            color: var(--primary-color);
+            font-size: 4rem;
+            font-weight: 800;
+            box-shadow: var(--glow);
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+            color: #fff;
+        }
+
+        .headline {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 3rem;
+            position: relative;
+            color: #fff;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 10px auto 0;
+            border-radius: 2px;
+            box-shadow: var(--glow);
+        }
+
+        #about {
+            background-color: var(--bg-dark);
+        }
+
+        .about-text {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        #skills,
+        #contact {
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .skill-tag {
+            background-color: var(--card-bg);
+            color: var(--text-dark);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0, 209, 255, 0.15);
+            transition: var(--transition);
+        }
+
+        .skill-tag:hover {
+            background-color: var(--primary-color);
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+
+        #portfolio,
+        .page-section {
+            background-color: var(--bg-dark);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .portfolio-card,
+        .ai-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .portfolio-card:hover,
+        .ai-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: var(--glow);
+        }
+
+        .portfolio-content,
+        .ai-card {
+            padding: 25px;
+        }
+
+        .portfolio-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .portfolio-desc {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 209, 255, 0.1);
+            border: none;
+        }
+
+        .btn:hover {
+            box-shadow: var(--glow);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: #fff;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 5px rgba(0, 209, 255, 0.1);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .form-box {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        textarea,
+        select,
+        input {
+            width: 100%;
+            background-color: #111827;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        textarea:focus,
+        select:focus,
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: var(--glow);
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 22px;
+            border-radius: 12px;
+            background-color: rgba(30, 41, 59, 0.9);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            white-space: pre-wrap;
+        }
+
+        .result-box h3 {
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .error-box {
+            margin-top: 20px;
+            color: #ffb4b4;
+            border: 1px solid rgba(255, 80, 80, 0.4);
+            background-color: rgba(120, 20, 20, 0.25);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .generated-img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--glow);
+        }
+
+        footer {
+            background-color: #080a10;
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 992px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-inner {
+                flex-direction: column;
+                padding: 16px 0;
+                gap: 12px;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .hero {
+                height: 30vh;
+            }
+
+            .avatar-wrap,
+            .avatar,
+            .avatar-fallback {
+                width: 150px;
+                height: 150px;
+            }
+
+            .avatar,
+            .avatar-fallback {
+                border-width: 5px;
+            }
+
+            .avatar-fallback {
+                font-size: 3rem;
+            }
+
+            .name {
+                font-size: 2rem;
+            }
+
+            .headline {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+
+            section {
+                padding: 3rem 0;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .about-text {
+                font-size: 1rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .portfolio-content {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Header -->
-    <nav class="navbar navbar-expand-md fixed-top py-4">
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="{{ url_for('home') }}" class="brand">蔡承恩 <span>AI Lab</span></a>
 
-        <div class="container">
-
-            <!-- Title -->
-            <a class="navbar-brand" href="{{ url_for('home') }}">
-                <img class="img-fluid logo" src="../static/images/logo.png">
-            </a>
-            <!-- End of Title -->
-
-            <!-- Navigation Menu -->
-            <button class="navbar-toggler" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"
-                data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbar">
-
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('home')) }}"
-                            href="{{ url_for('home') }}">
-                            Home
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('about')) }}"
-                            href="{{ url_for('about') }}">
-                            About
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('skills')) }}"
-                            href="{{ url_for('skills') }}">
-                            Skills
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('portfolio')) }}"
-                            href="{{ url_for('portfolio') }}">
-                            Portfolio
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('chat')) }}"
-                            href="{{ url_for('chat') }}">
-                            AI Chat
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('image')) }}"
-                            href="{{ url_for('image') }}">
-                            AI Image
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link me-3 {{ request.path | is_active(url_for('contact')) }}"
-                            href="{{ url_for('contact') }}">
-                            Contact
-                        </a>
-                    </li>
-
-                </ul>
-
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">首頁</a>
+                <a href="{{ url_for('home') }}#about">關於我</a>
+                <a href="{{ url_for('home') }}#skills">專業技能</a>
+                <a href="{{ url_for('home') }}#portfolio">作品集</a>
+                <a href="{{ url_for('chat') }}">AI 文字助理</a>
+                <a href="{{ url_for('image') }}">AI 圖片生成</a>
+                <a href="{{ url_for('home') }}#contact">聯絡方式</a>
             </div>
-
-            <!-- End of Navigation Menu -->
-
         </div>
-
     </nav>
 
-    <!-- End of Header -->
+    {% block content %}{% endblock %}
 
-    <!-- Main Content -->
-    <main>
-        {% block main %}{% endblock %}
-    </main>
-    <!-- End of Main Content -->
-
-    <!-- Footer -->
-    <footer class="footer fixed-bottom py-3">
-
-        <div class="container text-center">
-
-            <div class="row">
-
-                <div class="col-sm-12">
-                    <a href="https://github.com/geogeolo">
-                        <i class="social-icon bx bxl-github px-1"></i>
-                    </a>
-
-                    <a href="{{ url_for('result') }}">
-                        <i class="social-icon bx bxl-gmail px-1"></i>
-                    </a>
-                </div>
-
-            </div>
-
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> 蔡承恩. All rights reserved.</p>
         </div>
-
     </footer>
-    <!-- End of Footer -->
+
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+            observer.observe(section);
+        });
+    </script>
 
 </body>
 
