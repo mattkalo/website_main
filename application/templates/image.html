@@ -1,82 +1,54 @@
 {% extends "layout.html" %}
 
 {% block title %}
-AI 圖片生成
+AI 圖片生成 | 蔡承恩
 {% endblock %}
 
-{% block main %}
+{% block content %}
 
-<div class="container description mb-5 pb-5" style="padding-top: 140px;">
+<section class="page-section">
+    <div class="container form-box">
 
-    <div class="row justify-content-center">
+        <h2 class="section-title">AI 圖片生成</h2>
 
-        <div class="col-md-9">
+        <div class="ai-card">
 
-            <div class="description-box">
+            <p class="portfolio-desc" style="margin-bottom: 20px;">
+                此功能整合 OpenAI 圖片生成 API。輸入圖片描述後，系統會產生對應圖片，適合作為網站展示與作業成果截圖。
+            </p>
 
-                <h2 class="main-text">
-                    AI <span class="name">圖片生成</span>
-                </h2>
+            <form method="POST" action="{{ url_for('image') }}">
+                <textarea
+                    name="prompt"
+                    rows="5"
+                    placeholder="例如：A futuristic AI laboratory with blue neon light, COMSOL simulation screen, photonics research style"
+                    required>{{ prompt }}</textarea>
 
-                <p class="secondary-text">
-                    這是整合 OpenAI 的圖片生成工具。輸入圖片描述後，系統會自動產生圖片。
-                </p>
+                <select name="size">
+                    <option value="1024x1024" {% if size == "1024x1024" %}selected{% endif %}>1024 x 1024</option>
+                    <option value="1024x1536" {% if size == "1024x1536" %}selected{% endif %}>1024 x 1536</option>
+                    <option value="1536x1024" {% if size == "1536x1024" %}selected{% endif %}>1536 x 1024</option>
+                </select>
 
-                <form method="POST" action="{{ url_for('image') }}">
+                <button type="submit" class="btn btn-primary">生成圖片</button>
+            </form>
 
-                    <div class="mb-3">
-                        <textarea class="form-control" name="prompt" rows="4"
-                            placeholder="例如：A futuristic AI laboratory with blue neon light"
-                            required>{{ prompt }}</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <select class="form-control" name="size">
-                            <option value="1024x1024" {% if size == "1024x1024" %}selected{% endif %}>
-                                1024 x 1024
-                            </option>
-
-                            <option value="1024x1536" {% if size == "1024x1536" %}selected{% endif %}>
-                                1024 x 1536
-                            </option>
-
-                            <option value="1536x1024" {% if size == "1536x1024" %}selected{% endif %}>
-                                1536 x 1024
-                            </option>
-                        </select>
-                    </div>
-
-                    <button class="btn" type="submit">
-                        生成圖片 <i class="bx bx-image-add px-2"></i>
-                    </button>
-
-                </form>
-
-                {% if error_message %}
-                <div class="alert alert-danger mt-4">
-                    {{ error_message }}
-                </div>
-                {% endif %}
-
-                {% if image_url %}
-                <div class="card-design mt-4 p-4 text-center">
-
-                    <h5>
-                        <i class="bx bx-image"></i>
-                        生成結果
-                    </h5>
-
-                    <img src="{{ image_url }}" class="img-fluid rounded mt-3" alt="AI generated image">
-
-                </div>
-                {% endif %}
-
+            {% if error_message %}
+            <div class="error-box">
+                {{ error_message }}
             </div>
+            {% endif %}
+
+            {% if image_url %}
+            <div class="result-box">
+                <h3>生成結果</h3>
+                <img src="{{ image_url }}" alt="AI generated image" class="generated-img">
+            </div>
+            {% endif %}
 
         </div>
 
     </div>
-
-</div>
+</section>
 
 {% endblock %}
