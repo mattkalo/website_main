@@ -9,7 +9,6 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 
 TEXT_MODEL = os.getenv("TEXT_MODEL", "gpt-4o-mini")
-IMAGE_MODEL = os.getenv("IMAGE_MODEL", "gpt-image-1")
 
 SYSTEM_PROMPT = """
 你是蔡承恩的個人化 AI 學習助理。
@@ -25,7 +24,10 @@ def get_openai_client():
     if not api_key:
         raise ValueError("尚未設定 OPENAI_API_KEY，請先到 Render Environment Variables 新增。")
 
-    return OpenAI(api_key=api_key)
+    return OpenAI(
+        api_key=api_key,
+        timeout=180.0
+    )
 
 
 @app.route("/")
@@ -76,7 +78,8 @@ def chat():
                         {"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user", "content": user_message}
                     ],
-                    temperature=0.7
+                    temperature=0.7,
+                    timeout=180
                 )
 
                 ai_response = response.choices[0].message.content
@@ -94,13 +97,11 @@ def chat():
 @app.route("/image", methods=["GET", "POST"])
 def image():
     prompt = ""
-    size = "1024x1024"
     image_url = ""
     error_message = ""
 
     if request.method == "POST":
         prompt = request.form.get("prompt", "").strip()
-        size = request.form.get("size", "1024x1024").strip()
 
         if not prompt:
             error_message = "請輸入圖片描述。"
@@ -109,20 +110,18 @@ def image():
                 client = get_openai_client()
 
                 result = client.images.generate(
-                    model=IMAGE_MODEL,
+                    model="dall-e-3",
                     prompt=prompt,
-                    size=size,
-                    n=1
+                    size="1024x1024",
+                    quality="standard",
+                    n=1,
+                    timeout=180
                 )
 
-                image_data = result.data[0]
+                image_url = result.data[0].url
 
-                if hasattr(image_data, "url") and image_data.url:
-                    image_url = image_data.url
-                elif hasattr(image_data, "b64_json") and image_data.b64_json:
-                    image_url = f"data:image/png;base64,{image_data.b64_json}"
-                else:
-                    error_message = "圖片已生成，但沒有取得可顯示的圖片資料。"
+                if not image_url:
+                    error_message = "圖片已生成，但沒有取得圖片網址。"
 
             except Exception as error:
                 error_message = f"圖片生成失敗：{error}"
@@ -130,7 +129,6 @@ def image():
     return render_template(
         "image.html",
         prompt=prompt,
-        size=size,
         image_url=image_url,
         error_message=error_message
     )
