@@ -24,12 +24,6 @@ AI 圖片生成 | 蔡承恩
                     placeholder="例如：A futuristic AI laboratory with blue neon light, COMSOL simulation screen, photonics research style"
                     required>{{ prompt }}</textarea>
 
-                <select name="size">
-                    <option value="1024x1024" {% if size == "1024x1024" %}selected{% endif %}>1024 x 1024</option>
-                    <option value="1024x1536" {% if size == "1024x1536" %}selected{% endif %}>1024 x 1536</option>
-                    <option value="1536x1024" {% if size == "1536x1024" %}selected{% endif %}>1536 x 1024</option>
-                </select>
-
                 <button type="submit" class="btn btn-primary">生成圖片</button>
             </form>
 
